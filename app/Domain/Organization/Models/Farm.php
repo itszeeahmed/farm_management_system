@@ -3,6 +3,9 @@
 namespace App\Domain\Organization\Models;
 
 use App\Domain\Animals\Models\Animal;
+use App\Domain\Animals\Models\AnimalGroup;
+use App\Domain\Milk\Models\BulkTank;
+use App\Domain\Milk\Models\MilkDispatch;
 use App\Domain\Milk\Models\MilkRecord;
 use App\Domain\Milk\Models\MilkSession;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,14 +30,38 @@ class Farm extends Model
         'area_unit',
         'timezone',
         'climate_settings',
+        'boundary_geojson',
+        'elevation_meters',
+        'soil_type',
+        'water_sources',
+        'backup_generator',
     ];
 
     protected $casts = [
         'latitude' => 'decimal:7',
         'longitude' => 'decimal:7',
         'total_area' => 'decimal:2',
+        'elevation_meters' => 'integer',
+        'backup_generator' => 'boolean',
         'climate_settings' => 'array',
+        'boundary_geojson' => 'array',
+        'water_sources' => 'array',
     ];
+
+    /**
+     * Resolve the current multi-tenant farm from container or fallback.
+     */
+    public static function current(): ?static
+    {
+        if (app()->bound('current_farm')) {
+            $farm = app('current_farm');
+            if ($farm instanceof static) {
+                return $farm;
+            }
+        }
+
+        return static::first();
+    }
 
     public function organization(): BelongsTo
     {
@@ -44,6 +71,31 @@ class Farm extends Model
     public function barns(): HasMany
     {
         return $this->hasMany(Barn::class);
+    }
+
+    public function zones(): HasMany
+    {
+        return $this->hasMany(FarmZone::class);
+    }
+
+    public function structures(): HasMany
+    {
+        return $this->hasMany(FarmStructure::class);
+    }
+
+    public function userAccesses(): HasMany
+    {
+        return $this->hasMany(UserFarmAccess::class);
+    }
+
+    public function animalGroups(): HasMany
+    {
+        return $this->hasMany(AnimalGroup::class);
+    }
+
+    public function auditLogs(): HasMany
+    {
+        return $this->hasMany(AuditLog::class);
     }
 
     public function animals(): HasMany
@@ -59,5 +111,15 @@ class Farm extends Model
     public function milkRecords(): HasMany
     {
         return $this->hasMany(MilkRecord::class);
+    }
+
+    public function bulkTanks(): HasMany
+    {
+        return $this->hasMany(BulkTank::class);
+    }
+
+    public function milkDispatches(): HasMany
+    {
+        return $this->hasMany(MilkDispatch::class);
     }
 }

@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'dashboard' => 'لوحة التحكم',
+    'animals' => 'إدارة الثروة الحيوانية',
+    'milk_production' => 'إنتاج الألبان والحليب',
+    'collection_center' => 'مركز تجميع الحليب',
+    'veterinary_health' => 'الرعاية البيطرية والصحة',
+    'feed_nutrition' => 'الأعلاف والتغذية',
+    'breeding_reproduction' => 'التكاثر وعلم الوراثة',
+    'meat_slaughter' => 'إدارة التسمين واللحوم',
+    'inventory' => 'المخزون وإدارة الأصول',
+    'sales_crm' => 'المبيعات المباشرة والاشتراكات',
+    'accounting_finance' => 'المحاسبة المالية والتكاليف',
+    'compliance_traceability' => 'الامتثال والتتبع والذبح الحلال',
+    'settings' => 'الإعدادات',
+    'user_preferences' => 'تفضيلات المستخدم',
+    'date' => 'التاريخ',
+    'time' => 'الوقت',
+    'currency' => 'العملة',
+    'language' => 'اللغة',
+    'timezone' => 'المنطقة الزمنية',
+    'saved_successfully' => 'تم حفظ التفضيلات بنجاح.',
+    'welcome_back' => 'مرحباً بعودتك، :name!',
+];

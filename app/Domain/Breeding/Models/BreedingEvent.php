@@ -17,6 +17,7 @@ class BreedingEvent extends Model
         'farm_id',
         'animal_id',
         'sire_id',
+        'semen_straw_inventory_id',
         'method',
         'semen_straw_code',
         'sire_breed_code',
@@ -24,13 +25,22 @@ class BreedingEvent extends Model
         'technician_name',
         'cost',
         'status',
+        'cycle_number',
+        'heat_intensity_score',
         'notes',
     ];
 
     protected $casts = [
         'insemination_datetime' => 'datetime',
         'cost' => 'decimal:2',
+        'cycle_number' => 'integer',
+        'heat_intensity_score' => 'integer',
     ];
+
+    public function semenStraw(): BelongsTo
+    {
+        return $this->belongsTo(SemenStrawInventory::class, 'semen_straw_inventory_id');
+    }
 
     public function farm(): BelongsTo
     {

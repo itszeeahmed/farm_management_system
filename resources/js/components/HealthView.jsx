@@ -65,51 +65,51 @@ export default function HealthView({ onOpenTreatmentModal }) {
             </div>
 
             {/* CRITICAL WITHDRAWAL MONITOR */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-rose-950/30 to-slate-900 border border-rose-500/40 shadow-sm space-y-4">
+            <div className="p-6 rounded-2xl bg-rose-50/60 dark:bg-slate-900 border border-rose-200 dark:border-rose-500/40 shadow-sm space-y-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
-                        <ShieldAlert className="w-6 h-6 text-rose-500 animate-pulse" />
+                        <ShieldAlert className="w-6 h-6 text-rose-600 dark:text-rose-500 animate-pulse shrink-0" />
                         <div>
-                            <h4 className="font-bold text-base text-rose-300">Antimicrobial Withdrawal Monitor</h4>
-                            <p className="text-xs text-slate-400">Automatic exclusion from milking pipeline to prevent drug residue contamination</p>
+                            <h4 className="font-bold text-base text-rose-950 dark:text-rose-300">Antimicrobial Withdrawal Monitor</h4>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">Automatic exclusion from milking pipeline to prevent drug residue contamination</p>
                         </div>
                     </div>
-                    <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                    <span className="text-xs font-mono font-bold px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-500/30">
                         {withdrawals.length} Animal(s) Restricted
                     </span>
                 </div>
 
                 {withdrawals.length === 0 ? (
-                    <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4" /> All animals cleared. Zero active medicine withdrawal locks in place.
+                    <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs font-medium flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" /> All animals cleared. Zero active medicine withdrawal locks in place.
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {withdrawals.map((item) => (
-                            <div key={item.id} className="p-4 rounded-xl bg-slate-900/80 border border-rose-500/30 space-y-3">
+                            <div key={item.id} className="p-4 rounded-xl bg-white dark:bg-slate-900/80 border border-rose-200 dark:border-rose-500/30 shadow-sm space-y-3">
                                 <div className="flex items-center justify-between">
-                                    <span className="font-mono font-bold text-sm text-white">
+                                    <span className="font-mono font-bold text-sm text-slate-900 dark:text-white">
                                         {item.animal?.tag_number} ({item.animal?.name || 'Cattle'})
                                     </span>
-                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-500 text-white animate-pulse">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-600 text-white animate-pulse">
                                         Milk Locked
                                     </span>
                                 </div>
-                                <div className="text-xs space-y-1 text-slate-300">
+                                <div className="text-xs space-y-1 text-slate-700 dark:text-slate-300">
                                     <div className="flex justify-between">
-                                        <span className="text-slate-400">Medicine Administered:</span>
-                                        <span className="font-semibold text-rose-300">{item.medicine?.name}</span>
+                                        <span className="text-slate-500 dark:text-slate-400">Medicine Administered:</span>
+                                        <span className="font-semibold text-rose-700 dark:text-rose-300">{item.medicine?.name}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-slate-400">Withdrawal Period Expiry:</span>
-                                        <span className="font-mono text-amber-400">{new Date(item.milk_withdrawal_until).toLocaleString()}</span>
+                                        <span className="text-slate-500 dark:text-slate-400">Withdrawal Period Expiry:</span>
+                                        <span className="font-mono font-semibold text-amber-700 dark:text-amber-400">{new Date(item.milk_withdrawal_until).toLocaleString()}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-slate-400">Dosage Given:</span>
-                                        <span>{item.dosage}</span>
+                                        <span className="text-slate-500 dark:text-slate-400">Dosage Given:</span>
+                                        <span className="font-medium text-slate-800 dark:text-slate-200">{item.dosage}</span>
                                     </div>
                                 </div>
-                                <div className="p-2.5 rounded-lg bg-rose-950/40 border border-rose-500/20 text-[11px] text-rose-200">
+                                <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-500/20 text-[11px] text-rose-800 dark:text-rose-200">
                                     ⚠️ <strong>Warning:</strong> Any milk collected from this animal must be discarded and recorded under "discarded_withdrawal".
                                 </div>
                             </div>

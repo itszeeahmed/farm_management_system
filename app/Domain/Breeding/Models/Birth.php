@@ -16,9 +16,12 @@ class Birth extends Model
         'farm_id',
         'dam_id',
         'sire_id',
+        'created_offspring_id',
         'pregnancy_id',
         'calving_datetime',
         'calving_ease',
+        'birth_weight_kg',
+        'offspring_sex',
         'offspring_count',
         'live_count',
         'stillborn_count',
@@ -30,12 +33,18 @@ class Birth extends Model
 
     protected $casts = [
         'calving_datetime' => 'datetime',
+        'birth_weight_kg' => 'decimal:2',
         'colostrum_fed' => 'boolean',
         'colostrum_liters' => 'decimal:2',
         'offspring_count' => 'integer',
         'live_count' => 'integer',
         'stillborn_count' => 'integer',
     ];
+
+    public function offspring(): BelongsTo
+    {
+        return $this->belongsTo(Animal::class, 'created_offspring_id');
+    }
 
     public function farm(): BelongsTo
     {

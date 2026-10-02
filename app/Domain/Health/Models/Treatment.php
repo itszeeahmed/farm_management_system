@@ -25,6 +25,11 @@ class Treatment extends Model
         'milk_withdrawal_until',
         'meat_withdrawal_until',
         'administered_by',
+        'veterinarian_license_number',
+        'prescription_number',
+        'batch_lot_number',
+        'active_substance_administered_mg',
+        'ddda_units_consumed',
         'cost',
         'notes',
     ];
@@ -34,6 +39,8 @@ class Treatment extends Model
         'milk_withdrawal_until' => 'datetime',
         'meat_withdrawal_until' => 'datetime',
         'dosage' => 'decimal:2',
+        'active_substance_administered_mg' => 'decimal:2',
+        'ddda_units_consumed' => 'decimal:3',
         'cost' => 'decimal:2',
     ];
 

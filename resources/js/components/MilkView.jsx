@@ -131,12 +131,22 @@ export default function MilkView({ onOpenLogMilkModal }) {
                                                 {rec.recorded_date}
                                             </td>
                                             <td className="py-3 px-4 font-semibold capitalize flex items-center gap-1.5">
-                                                {rec.session === 'morning' ? (
-                                                    <Sun className="w-3.5 h-3.5 text-amber-500" />
-                                                ) : (
-                                                    <Moon className="w-3.5 h-3.5 text-indigo-400" />
-                                                )}
-                                                {rec.session}
+                                                {(() => {
+                                                    const sessionLabel = typeof rec.session === 'object' && rec.session !== null
+                                                        ? (rec.session.shift || 'Session')
+                                                        : (rec.session || rec.shift || 'Morning');
+                                                    const isMorning = String(sessionLabel).toLowerCase().includes('morn');
+                                                    return (
+                                                        <>
+                                                            {isMorning ? (
+                                                                <Sun className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                                            ) : (
+                                                                <Moon className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                                                            )}
+                                                            <span>{sessionLabel}</span>
+                                                        </>
+                                                    );
+                                                })()}
                                             </td>
                                             <td className="py-3 px-4">
                                                 <span className="font-mono font-bold text-slate-900 dark:text-white">

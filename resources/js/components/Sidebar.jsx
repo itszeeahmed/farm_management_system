@@ -1,85 +1,83 @@
 import React from 'react';
-import { 
-    LayoutDashboard, 
-    Binary, 
-    Milk, 
-    HeartPulse, 
-    GitBranch, 
-    Wheat, 
-    CircleDollarSign, 
-    CheckSquare, 
-    ShieldAlert,
-    SunMedium,
-    Sparkles
+import {
+    LayoutDashboard,
+    PawPrint,
+    Milk,
+    Wheat,
+    HeartPulse,
+    GitBranch,
+    Beef,
+    ShoppingCart,
+    CircleDollarSign,
+    Wifi,
+    Users
 } from 'lucide-react';
 
-export default function Sidebar({ currentTab, setCurrentTab, activeWithdrawalsCount }) {
-    const navItems = [
-        { id: 'dashboard', label: 'Executive Dashboard', icon: LayoutDashboard },
-        { id: 'livestock', label: 'Livestock Registry', icon: Binary, count: '15' },
-        { id: 'milk', label: 'Milk Production', icon: Milk },
-        { id: 'health', label: 'Health & Withdrawals', icon: HeartPulse, badge: activeWithdrawalsCount > 0 ? `${activeWithdrawalsCount} Alert` : null },
-        { id: 'breeding', label: 'Breeding & Genetics', icon: GitBranch },
-        { id: 'feed', label: 'Feed & Nutrition', icon: Wheat },
-        { id: 'finances', label: 'Finances & P&L', icon: CircleDollarSign },
-        { id: 'tasks', label: 'Farm Tasks', icon: CheckSquare },
-    ];
+// Dynamic navigation items with permission slug requirements
+const ALL_NAV_ITEMS = [
+    { id: 'dashboard',  label: 'Dashboard',             icon: LayoutDashboard, perm: null },
+    { id: 'livestock',  label: 'Livestock Master',       icon: PawPrint,        perm: 'animals.view' },
+    { id: 'milk',       label: 'Milking & Tanks',        icon: Milk,            perm: 'milk.record' },
+    { id: 'feed',       label: 'Feed & Rations',         icon: Wheat,           perm: 'feed.manage' },
+    { id: 'health',     label: 'Veterinary Health',      icon: HeartPulse,      perm: 'health.diagnose', alert: true },
+    { id: 'breeding',   label: 'Breeding & Calving',     icon: GitBranch,       perm: 'animals.view' },
+    { id: 'feedlots',   label: 'Meat Feedlots',          icon: Beef,            perm: 'animals.view' },
+    { id: 'sales',      label: 'Direct Sales CRM',       icon: ShoppingCart,    perm: 'finance.view' },
+    { id: 'finances',   label: 'Cost-Per-Liter Finance', icon: CircleDollarSign, perm: 'finance.view' },
+    { id: 'compliance', label: 'Compliance & Sync',      icon: Wifi,            perm: 'audit.view' },
+    { id: 'team',       label: 'Team & Access',          icon: Users,           perm: 'team.manage' },
+];
+
+export default function Sidebar({
+    currentTab,
+    setCurrentTab,
+    activeWithdrawalsCount,
+    hasPermission,
+    userRole = 'Farm Owner'
+}) {
+    // Dynamically filter nav items using hasPermission()
+    const navItems = ALL_NAV_ITEMS.filter(item => {
+        if (!item.perm) return true;
+        if (userRole === 'Farm Owner') return true;
+        if (typeof hasPermission === 'function') {
+            if (item.id === 'team') {
+                return hasPermission('team.manage') || hasPermission('audit.view');
+            }
+            return hasPermission(item.perm);
+        }
+        return true;
+    });
 
     return (
-        <aside className="w-64 bg-slate-900 border-r border-slate-800 flex flex-col shrink-0 text-slate-300">
-            {/* Logo & Farm Identity */}
-            <div className="p-5 border-b border-slate-800">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-lg shadow-emerald-900/40">
-                        <Sparkles className="w-6 h-6" />
-                    </div>
-                    <div>
-                        <h1 className="font-bold text-white tracking-tight text-base">Al-Falah Farm</h1>
-                        <p className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            Pilot Farm #01
-                        </p>
-                    </div>
+        <aside className="app-sidebar w-56 flex flex-col shrink-0 select-none">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5 px-4 py-5 border-b border-white/10">
+                <div className="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+                    <PawPrint className="w-5 h-5 text-green-300" />
                 </div>
-
-                <div className="mt-4 px-3 py-2 bg-slate-800/60 rounded-lg border border-slate-700/50 flex items-center justify-between text-xs">
-                    <span className="text-slate-400">Stock Count</span>
-                    <span className="font-mono text-emerald-400 font-semibold">5 Cows • 10 Goats</span>
+                <div>
+                    <div className="text-sm font-bold text-white leading-tight">GreenPastures</div>
+                    <div className="text-[11px] text-green-400 leading-tight">Agro Enterprise</div>
                 </div>
             </div>
 
-            {/* Navigation Menu */}
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-                {navItems.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = currentTab === item.id;
+            {/* Navigation */}
+            <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
+                {navItems.map(({ id, label, icon: Icon, alert }) => {
+                    const isActive = currentTab === id;
+                    const showBadge = alert && activeWithdrawalsCount > 0;
                     return (
                         <button
-                            key={item.id}
-                            id={`nav-${item.id}`}
-                            onClick={() => setCurrentTab(item.id)}
-                            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                                isActive 
-                                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-900/30 font-semibold' 
-                                    : 'text-slate-300 hover:bg-slate-800/70 hover:text-white'
-                            }`}
+                            key={id}
+                            id={`nav-${id}`}
+                            onClick={() => setCurrentTab(id)}
+                            className={`nav-item ${isActive ? 'active' : ''}`}
                         >
-                            <div className="flex items-center gap-3">
-                                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                                <span>{item.label}</span>
-                            </div>
-
-                            {item.count && (
-                                <span className={`text-xs px-2 py-0.5 rounded-full font-mono ${
-                                    isActive ? 'bg-emerald-700 text-white' : 'bg-slate-800 text-slate-400'
-                                }`}>
-                                    {item.count}
-                                </span>
-                            )}
-
-                            {item.badge && (
-                                <span className="text-xs px-2 py-0.5 rounded-full font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">
-                                    {item.badge}
+                            <Icon className="w-4 h-4 shrink-0 nav-icon" />
+                            <span className="flex-1 text-left">{label}</span>
+                            {showBadge && (
+                                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-red-500 text-white leading-none">
+                                    {activeWithdrawalsCount}
                                 </span>
                             )}
                         </button>
@@ -87,18 +85,11 @@ export default function Sidebar({ currentTab, setCurrentTab, activeWithdrawalsCo
                 })}
             </nav>
 
-            {/* System Status Footer */}
-            <div className="p-4 border-t border-slate-800 text-xs text-slate-400 space-y-2">
-                <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        PostgreSQL 18
-                    </span>
-                    <span className="font-mono text-slate-400">Port 5432</span>
-                </div>
-                <div className="flex items-center justify-between">
-                    <span>PHP Engine</span>
-                    <span className="font-mono text-emerald-400 font-semibold">8.3.28 FastCGI</span>
+            {/* Footer */}
+            <div className="px-4 py-3 border-t border-white/10">
+                <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 inline-block"></span>
+                    <span className="text-[11px] text-green-400 font-medium">Multi-Tenant Online</span>
                 </div>
             </div>
         </aside>

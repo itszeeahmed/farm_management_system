@@ -23,17 +23,22 @@ export default function FinanceView() {
         setLoading(true);
         try {
             const [fRes, dRes] = await Promise.all([
-                api.getFinances(),
-                api.getDashboard()
+                api.getFinances().catch(() => ({})),
+                api.getDashboard().catch(() => ({}))
             ]);
-            setTransactions(fRes.data || []);
-            setSummary(dRes.finance || null);
+            const txList = fRes?.transactions?.data || fRes?.transactions || fRes?.data || [];
+            setTransactions(Array.isArray(txList) ? txList : []);
+            setSummary(fRes?.summary || dRes?.finance || null);
         } catch (err) {
             console.error('Failed to load finances:', err);
         } finally {
             setLoading(false);
         }
     }
+
+    const monthlyIncome = summary?.monthly_income ?? summary?.total_income ?? 0;
+    const monthlyExpense = summary?.monthly_expense ?? summary?.total_expense ?? 0;
+    const netProfit = summary?.net_profit ?? (monthlyIncome - monthlyExpense);
 
     return (
         <div className="space-y-6">
@@ -56,11 +61,11 @@ export default function FinanceView() {
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Monthly Revenue</span>
                     <div className="mt-2 flex items-baseline gap-2">
                         <span className="text-2xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
-                            PKR {summary?.monthly_income?.toLocaleString() || 0}
+                            PKR {monthlyIncome.toLocaleString()}
                         </span>
                     </div>
                     <span className="text-xs text-emerald-500 mt-2 block font-medium flex items-center gap-1">
-                        <ArrowUpRight className="w-3.5 h-3.5" /> 110 Commercial Milk Deliveries
+                        <ArrowUpRight className="w-3.5 h-3.5" /> Commercial Milk Deliveries
                     </span>
                 </div>
 
@@ -68,7 +73,7 @@ export default function FinanceView() {
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Monthly Operating Expense</span>
                     <div className="mt-2 flex items-baseline gap-2">
                         <span className="text-2xl font-bold font-mono text-rose-600 dark:text-rose-400">
-                            PKR {summary?.monthly_expense?.toLocaleString() || 0}
+                            PKR {monthlyExpense.toLocaleString()}
                         </span>
                     </div>
                     <span className="text-xs text-rose-500 mt-2 block font-medium flex items-center gap-1">
@@ -80,9 +85,9 @@ export default function FinanceView() {
                     <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Net Operating Balance</span>
                     <div className="mt-2 flex items-baseline gap-2">
                         <span className={`text-2xl font-bold font-mono ${
-                            (summary?.net_profit || 0) >= 0 ? 'text-emerald-500' : 'text-slate-800 dark:text-slate-200'
+                            netProfit >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
                         }`}>
-                            PKR {summary?.net_profit?.toLocaleString() || 0}
+                            PKR {netProfit.toLocaleString()}
                         </span>
                     </div>
                     <span className="text-xs text-slate-400 mt-2 block font-medium">Initial pilot month investment phase</span>

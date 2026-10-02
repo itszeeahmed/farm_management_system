@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'dashboard' => 'Panel de Control',
+    'animals' => 'Gestión Ganadera',
+    'milk_production' => 'Producción Lechera',
+    'collection_center' => 'Centro de Recolección',
+    'veterinary_health' => 'Salud Veterinaria',
+    'feed_nutrition' => 'Alimentación y Nutrición',
+    'breeding_reproduction' => 'Reproducción y Genética',
+    'meat_slaughter' => 'Gestión de Carne y Engorde',
+    'inventory' => 'Inventario y Maquinaria',
+    'sales_crm' => 'Ventas y Suscripciones',
+    'accounting_finance' => 'Contabilidad Financiera',
+    'compliance_traceability' => 'Cumplimiento y Trazabilidad',
+    'settings' => 'Configuración',
+    'user_preferences' => 'Preferencias del Usuario',
+    'date' => 'Fecha',
+    'time' => 'Hora',
+    'currency' => 'Moneda',
+    'language' => 'Idioma',
+    'timezone' => 'Zona Horaria',
+    'saved_successfully' => 'Preferencias actualizadas con éxito.',
+    'welcome_back' => '¡Bienvenido de nuevo, :name!',
+];

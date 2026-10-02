@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'dashboard' => 'ڈیش بورڈ',
+    'animals' => 'مویشیوں کا انتظام',
+    'milk_production' => 'دودھ کی پیداوار',
+    'collection_center' => 'ملک کلیکشن سینٹر',
+    'veterinary_health' => 'ویٹرنری علاج و صحت',
+    'feed_nutrition' => 'خوراک اور غذائیت',
+    'breeding_reproduction' => 'نسل کشی اور جینیات',
+    'meat_slaughter' => 'گوشت اور فیڈ لاٹ',
+    'inventory' => 'انوینٹری اور اثاثہ جات',
+    'sales_crm' => 'براہ راست فروخت اور سبسکرپشن',
+    'accounting_finance' => 'مالیاتی کھاتے اور اکاؤنٹنگ',
+    'compliance_traceability' => 'معیار اور ٹریسیبلٹی',
+    'settings' => 'ترتیبات',
+    'user_preferences' => 'صارف کی ترجیحات',
+    'date' => 'تاریخ',
+    'time' => 'وقت',
+    'currency' => 'کرنسی',
+    'language' => 'زبان',
+    'timezone' => 'ٹائم زون',
+    'saved_successfully' => 'ترجیحات کامیابی سے محفوظ ہو گئیں۔',
+    'welcome_back' => 'خوش آمدید، :name!',
+];

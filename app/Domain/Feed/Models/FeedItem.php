@@ -23,6 +23,14 @@ class FeedItem extends Model
         'cost_per_unit',
         'dry_matter_percentage',
         'crude_protein_percentage',
+        'ndf_percentage',
+        'adf_percentage',
+        'nel_mcal_per_kg',
+        'tdn_percentage',
+        'calcium_percentage',
+        'phosphorus_percentage',
+        'ash_percentage',
+        'is_active',
         'notes',
     ];
 
@@ -32,6 +40,14 @@ class FeedItem extends Model
         'cost_per_unit' => 'decimal:2',
         'dry_matter_percentage' => 'decimal:2',
         'crude_protein_percentage' => 'decimal:2',
+        'ndf_percentage' => 'decimal:2',
+        'adf_percentage' => 'decimal:2',
+        'nel_mcal_per_kg' => 'decimal:2',
+        'tdn_percentage' => 'decimal:2',
+        'calcium_percentage' => 'decimal:2',
+        'phosphorus_percentage' => 'decimal:2',
+        'ash_percentage' => 'decimal:2',
+        'is_active' => 'boolean',
     ];
 
     public function farm(): BelongsTo

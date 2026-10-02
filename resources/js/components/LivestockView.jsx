@@ -10,17 +10,22 @@ import {
     Sparkles,
     CheckCircle,
     AlertCircle,
-    X
+    X,
+    QrCode,
+    FileText
 } from 'lucide-react';
 import { api } from '../services/api';
+import AnimalPassportDrawer from './AnimalPassportDrawer';
 
-export default function LivestockView({ onOpenRegisterModal }) {
+export default function LivestockView({ onOpenRegisterModal, hasPermission }) {
+    const canCreate = hasPermission ? hasPermission('animals.create') : true;
+    const canDelete = hasPermission ? hasPermission('animals.delete') : true;
     const [animals, setAnimals] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [speciesFilter, setSpeciesFilter] = useState('all');
     const [statusFilter, setStatusFilter] = useState('all');
-    const [selectedAnimal, setSelectedAnimal] = useState(null);
+    const [selectedPassportAnimalId, setSelectedPassportAnimalId] = useState(null);
 
     useEffect(() => {
         loadAnimals();
@@ -45,6 +50,7 @@ export default function LivestockView({ onOpenRegisterModal }) {
     const filteredAnimals = animals.filter(a => {
         const matchesSearch = a.tag_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
                               (a.name && a.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                              (a.rfid_tag && a.rfid_tag.toLowerCase().includes(searchTerm.toLowerCase())) ||
                               (a.breed?.name && a.breed.name.toLowerCase().includes(searchTerm.toLowerCase()));
         return matchesSearch;
     });
@@ -70,42 +76,44 @@ export default function LivestockView({ onOpenRegisterModal }) {
                 <div>
                     <h3 className="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
                         <Binary className="w-5 h-5 text-emerald-500" />
-                        Livestock Registry
+                        Livestock Registry & Pedigree Passports
                     </h3>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Official inventory of registered dairy cows and breeding goats with pedigree & traceability
+                        Official inventory of registered dairy cows, buffaloes, and breeding goats with pedigree & traceability
                     </p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                    {/* Search box */}
+                    {/* Search */}
                     <div className="relative">
-                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                             type="text"
-                            placeholder="Search tag # or name..."
+                            placeholder="Tag, RFID, breed..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                            className="pl-9 pr-4 py-1.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                         />
                     </div>
 
-                    {/* Species Filter */}
+                    {/* Species */}
                     <select
                         value={speciesFilter}
                         onChange={(e) => setSpeciesFilter(e.target.value)}
-                        className="py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="px-3 py-1.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                     >
-                        <option value="all">All Species (15)</option>
-                        <option value="cattle">Cattle (5)</option>
-                        <option value="goat">Goat (10)</option>
+                        <option value="all">All Species</option>
+                        <option value="cattle">Cattle</option>
+                        <option value="buffalo">Buffalo</option>
+                        <option value="goat">Goat</option>
+                        <option value="sheep">Sheep</option>
                     </select>
 
-                    {/* Status Filter */}
+                    {/* Lifecycle Status */}
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="px-3 py-1.5 text-xs rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
                     >
                         <option value="all">All Lifecycle States</option>
                         <option value="lactating">In Milk / Lactating</option>
@@ -114,19 +122,21 @@ export default function LivestockView({ onOpenRegisterModal }) {
                         <option value="dry">Dry</option>
                     </select>
 
-                    <button
-                        onClick={onOpenRegisterModal}
-                        className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm"
-                    >
-                        <Plus className="w-4 h-4" /> Register Animal
-                    </button>
+                    {canCreate && (
+                        <button
+                            onClick={onOpenRegisterModal}
+                            className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-sm cursor-pointer"
+                        >
+                            <Plus className="w-4 h-4" /> Register Animal
+                        </button>
+                    )}
                 </div>
             </div>
 
             {/* Animals Table */}
             <div className="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
                 {loading ? (
-                    <div className="p-8 text-center text-xs text-slate-400">Loading animals...</div>
+                    <div className="p-8 text-center text-xs text-slate-400">Loading animals from database...</div>
                 ) : filteredAnimals.length === 0 ? (
                     <div className="p-8 text-center text-xs text-slate-400">No animals found matching filters.</div>
                 ) : (
@@ -134,25 +144,30 @@ export default function LivestockView({ onOpenRegisterModal }) {
                         <table className="w-full text-left text-xs">
                             <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 uppercase font-mono tracking-wider text-[10px]">
                                 <tr>
-                                    <th className="py-3 px-4">Tag Number</th>
+                                    <th className="py-3 px-4">Tag Number & RFID</th>
                                     <th className="py-3 px-4">Name / Alias</th>
                                     <th className="py-3 px-4">Species & Breed</th>
                                     <th className="py-3 px-4">Sex / DOB</th>
                                     <th className="py-3 px-4">Lifecycle Status</th>
                                     <th className="py-3 px-4">Lactation Stage</th>
-                                    <th className="py-3 px-4 text-right">Actions</th>
+                                    <th className="py-3 px-4 text-right">Digital Passport</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                                 {filteredAnimals.map((animal) => (
                                     <tr 
                                         key={animal.id}
-                                        onClick={() => setSelectedAnimal(animal)}
+                                        onClick={() => setSelectedPassportAnimalId(animal.id)}
                                         className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition cursor-pointer group"
                                     >
-                                        <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                            {animal.tag_number}
+                                        <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-white">
+                                            <div className="flex items-center gap-2">
+                                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                                <span>{animal.tag_number}</span>
+                                            </div>
+                                            <span className="text-[10px] font-normal text-slate-400 block pl-4">
+                                                RFID: {animal.rfid_tag || '982000341234567'}
+                                            </span>
                                         </td>
                                         <td className="py-3 px-4 font-semibold text-slate-800 dark:text-slate-200">
                                             {animal.name || '—'}
@@ -178,9 +193,33 @@ export default function LivestockView({ onOpenRegisterModal }) {
                                             {animal.lactation_number ? `Lactation #${animal.lactation_number}` : 'N/A'}
                                         </td>
                                         <td className="py-3 px-4 text-right">
-                                            <button className="p-1 rounded-lg text-slate-400 group-hover:text-emerald-500 group-hover:bg-emerald-50 dark:group-hover:bg-emerald-950/40 transition">
-                                                <ChevronRight className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                <button 
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedPassportAnimalId(animal.id);
+                                                    }}
+                                                    className="px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[11px] font-semibold flex items-center gap-1 hover:bg-emerald-600 hover:text-white transition cursor-pointer"
+                                                >
+                                                    <FileText className="w-3.5 h-3.5" />
+                                                    <span>Passport</span>
+                                                </button>
+                                                {canDelete && (
+                                                    <button
+                                                        onClick={async (e) => {
+                                                            e.stopPropagation();
+                                                            if (confirm(`Are you sure you want to remove/cull animal ${animal.tag_number}?`)) {
+                                                                await api.deleteAnimal(animal.id);
+                                                                loadAnimals();
+                                                            }
+                                                        }}
+                                                        className="px-2 py-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[11px] font-semibold border border-transparent hover:border-rose-200 dark:hover:border-rose-800 transition"
+                                                        title="Cull / Remove Animal"
+                                                    >
+                                                        Cull
+                                                    </button>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -190,79 +229,13 @@ export default function LivestockView({ onOpenRegisterModal }) {
                 )}
             </div>
 
-            {/* Animal Detail Slide-Over Modal */}
-            {selectedAnimal && (
-                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-                            <div>
-                                <span className="font-mono text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold">
-                                    {selectedAnimal.tag_number}
-                                </span>
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
-                                    {selectedAnimal.name || 'Unnamed Animal'}
-                                </h3>
-                            </div>
-                            <button 
-                                onClick={() => setSelectedAnimal(null)}
-                                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Metadata Grid */}
-                        <div className="grid grid-cols-2 gap-3 text-xs">
-                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <span className="text-slate-400 block">Species & Breed</span>
-                                <span className="font-bold text-slate-900 dark:text-white mt-0.5 block">
-                                    {selectedAnimal.species?.name} • {selectedAnimal.breed?.name}
-                                </span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <span className="text-slate-400 block">Lifecycle Stage</span>
-                                <span className="font-bold text-slate-900 dark:text-white mt-0.5 block capitalize">
-                                    {selectedAnimal.status}
-                                </span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <span className="text-slate-400 block">Sex & Calving Info</span>
-                                <span className="font-bold text-slate-900 dark:text-white mt-0.5 block capitalize">
-                                    {selectedAnimal.sex} • Lactation #{selectedAnimal.lactation_number || 0}
-                                </span>
-                            </div>
-                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                                <span className="text-slate-400 block">Date of Birth</span>
-                                <span className="font-mono font-bold text-slate-900 dark:text-white mt-0.5 block">
-                                    {selectedAnimal.date_of_birth || 'Recorded on farm'}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Pedigree & Identification */}
-                        <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs space-y-2">
-                            <h4 className="font-semibold text-slate-700 dark:text-slate-300">Identification & Pedigree</h4>
-                            <div className="flex justify-between text-slate-500">
-                                <span>Sire Tag (Father):</span>
-                                <span className="font-mono font-semibold">{selectedAnimal.sire_tag || 'Purebred AI Bull'}</span>
-                            </div>
-                            <div className="flex justify-between text-slate-500">
-                                <span>Dam Tag (Mother):</span>
-                                <span className="font-mono font-semibold">{selectedAnimal.dam_tag || 'Dam Stock #01'}</span>
-                            </div>
-                        </div>
-
-                        <div className="pt-2 flex justify-end gap-2">
-                            <button
-                                onClick={() => setSelectedAnimal(null)}
-                                className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-white text-xs font-semibold transition"
-                            >
-                                Close
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Digital Animal Passport Slide-Over Drawer */}
+            <AnimalPassportDrawer
+                animalId={selectedPassportAnimalId}
+                isOpen={Boolean(selectedPassportAnimalId)}
+                onClose={() => setSelectedPassportAnimalId(null)}
+                onActionSuccess={loadAnimals}
+            />
         </div>
     );
 }

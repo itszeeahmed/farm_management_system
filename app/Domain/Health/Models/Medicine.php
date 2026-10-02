@@ -18,6 +18,8 @@ class Medicine extends Model
         'active_ingredient',
         'category',
         'is_antimicrobial',
+        'who_classification',
+        'standard_ddda_mg_per_kg',
         'default_dosage',
         'dosage_unit',
         'route_of_administration',
@@ -30,6 +32,7 @@ class Medicine extends Model
 
     protected $casts = [
         'is_antimicrobial' => 'boolean',
+        'standard_ddda_mg_per_kg' => 'decimal:4',
         'milk_withdrawal_days' => 'integer',
         'meat_withdrawal_days' => 'integer',
         'unit_cost' => 'decimal:2',

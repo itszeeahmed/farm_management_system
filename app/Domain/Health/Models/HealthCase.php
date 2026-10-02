@@ -21,6 +21,13 @@ class HealthCase extends Model
         'symptom_observed_at',
         'diagnosis',
         'symptoms_description',
+        'subjective_notes',
+        'objective_temp_c',
+        'objective_heart_rate',
+        'objective_respiration_rate',
+        'objective_rumen_motility_per_2min',
+        'assessment_notes',
+        'plan_notes',
         'severity',
         'status',
         'attending_vet_name',
@@ -32,6 +39,10 @@ class HealthCase extends Model
     protected $casts = [
         'symptom_observed_at' => 'date',
         'resolved_at' => 'date',
+        'objective_temp_c' => 'decimal:1',
+        'objective_heart_rate' => 'integer',
+        'objective_respiration_rate' => 'integer',
+        'objective_rumen_motility_per_2min' => 'integer',
     ];
 
     public function farm(): BelongsTo

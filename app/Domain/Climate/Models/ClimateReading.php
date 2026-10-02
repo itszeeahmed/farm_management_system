@@ -4,6 +4,7 @@ namespace App\Domain\Climate\Models;
 
 use App\Domain\Organization\Models\Barn;
 use App\Domain\Organization\Models\Farm;
+use App\Domain\Organization\Models\FarmZone;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,11 +16,15 @@ class ClimateReading extends Model
     protected $fillable = [
         'farm_id',
         'barn_id',
+        'zone_id',
         'recorded_at',
         'temperature_c',
         'relative_humidity_percent',
+        'air_velocity_m_s',
+        'solar_radiation_w_m2',
         'thi_index',
         'heat_stress_level',
+        'cooling_actuator_activated',
         'sensor_device_id',
         'mitigation_action_taken',
     ];
@@ -28,7 +33,10 @@ class ClimateReading extends Model
         'recorded_at' => 'datetime',
         'temperature_c' => 'decimal:1',
         'relative_humidity_percent' => 'decimal:2',
+        'air_velocity_m_s' => 'decimal:1',
+        'solar_radiation_w_m2' => 'decimal:1',
         'thi_index' => 'decimal:2',
+        'cooling_actuator_activated' => 'boolean',
     ];
 
     public function farm(): BelongsTo
@@ -39,6 +47,11 @@ class ClimateReading extends Model
     public function barn(): BelongsTo
     {
         return $this->belongsTo(Barn::class);
+    }
+
+    public function zone(): BelongsTo
+    {
+        return $this->belongsTo(FarmZone::class, 'zone_id');
     }
 
     /**

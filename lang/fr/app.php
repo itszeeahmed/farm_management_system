@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'dashboard' => 'Tableau de Bord',
+    'animals' => 'Gestion du Cheptel',
+    'milk_production' => 'Production Laitière',
+    'collection_center' => 'Centre de Collecte Laitier',
+    'veterinary_health' => 'Santé Vétérinaire',
+    'feed_nutrition' => 'Alimentation & Nutrition',
+    'breeding_reproduction' => 'Reproduction & Génétique',
+    'meat_slaughter' => 'Viande & Engraissement',
+    'inventory' => 'Stocks & Équipements',
+    'sales_crm' => 'Ventes Directes & Abonnements',
+    'accounting_finance' => 'Comptabilité Financière',
+    'compliance_traceability' => 'Conformité & Traçabilité',
+    'settings' => 'Paramètres',
+    'user_preferences' => 'Préférences Utilisateur',
+    'date' => 'Date',
+    'time' => 'Heure',
+    'currency' => 'Devise',
+    'language' => 'Langue',
+    'timezone' => 'Fuseau Horaire',
+    'saved_successfully' => 'Préférences mises à jour avec succès.',
+    'welcome_back' => 'Bienvenue, :name !',
+];

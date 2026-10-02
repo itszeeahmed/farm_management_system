@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'dashboard' => 'Dashboard',
+    'animals' => 'Livestock Management',
+    'milk_production' => 'Dairy Milk Production',
+    'collection_center' => 'Milk Collection Hub',
+    'veterinary_health' => 'Veterinary Healthcare',
+    'feed_nutrition' => 'Feed & Nutrition',
+    'breeding_reproduction' => 'Breeding & Genetics',
+    'meat_slaughter' => 'Meat & Feedlot Management',
+    'inventory' => 'Inventory & Asset Tracking',
+    'sales_crm' => 'Direct Sales & Subscriptions',
+    'accounting_finance' => 'Financial Accounting',
+    'compliance_traceability' => 'Compliance & Traceability',
+    'settings' => 'System Settings',
+    'user_preferences' => 'User Preferences',
+    'date' => 'Date',
+    'time' => 'Time',
+    'currency' => 'Currency',
+    'language' => 'Language',
+    'timezone' => 'Timezone',
+    'saved_successfully' => 'Preferences updated successfully.',
+    'welcome_back' => 'Welcome back, :name!',
+];
